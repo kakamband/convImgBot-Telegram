@@ -30,7 +30,7 @@ function main() {
 
         await sendMessage(
           message,
-          "Hi! Give me a image file so I can convert JPG to PNG"
+          "Hi! Give me a image file so I can convert to PNG"
         );
         return res.end();
       }
@@ -71,7 +71,7 @@ function main() {
             responseType: 'stream',
           });
 
-          const path = Path.resolve(__dirname, '..', '..', 'tmp', fileTitle);
+          const path = Path.resolve(__dirname, '..', '..', '..', 'tmp', fileTitle);
 
           response2.data.pipe(fs.createWriteStream(path + '.' + fileExt));
 
