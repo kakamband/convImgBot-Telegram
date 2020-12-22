@@ -71,7 +71,7 @@ function main() {
             responseType: 'stream',
           });
 
-          const path = Path.resolve(__dirname, '..', '..', 'tmp', fileTitle);
+          const path = Path.resolve(__dirname, '..', '..', '..', 'tmp', fileTitle);
 
           response2.data.pipe(fs.createWriteStream(path + '.' + fileExt));
 
