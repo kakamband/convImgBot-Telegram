@@ -30,7 +30,7 @@ function main() {
 
         await sendMessage(
           message,
-          "Hi! Give me a image file so I can convert JPG to PNG"
+          "Hi! Give me a image file so I can convert to PNG"
         );
         return res.end();
       }
