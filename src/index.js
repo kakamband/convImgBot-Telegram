@@ -43,7 +43,7 @@ function main() {
 
         if (message.hasOwnProperty('document')) {
 
-          if (!message.document.mime_type === 'image/jpg' || !message.document.mime_type === 'image/jpeg' || !message.document.mime_type === 'image/png') {
+          if (!message.document.mime_type.includes('image/')) {
             await sendMessage(message, 'You must send a image');
 
             return res.end();
@@ -88,7 +88,7 @@ function main() {
           await asyncJimp
             .read(path + '.' + fileExt)
             .then(resolve => {
-              fileExt === 'jpg' || 'jpeg' ? fileExt = 'png' : fileExt = 'jpg';
+              (fileExt !== 'png') ? fileExt = 'png' : fileExt = 'jpg';
               resolve.write(path + '.' + fileExt);
             }).catch(reject => reject());
 
