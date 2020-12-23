@@ -86,8 +86,6 @@ function main() {
               (fileExt !== 'png') ? fileExt = 'png' : fileExt = 'jpg';
               resolve
               .deflateStrategy(0)
-              .filterType(Jimp.PNG_FILTER_NONE)
-              .colorType(0)
               .write(path + '.' + fileExt);
             }).catch(reject => reject());
 
