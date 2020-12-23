@@ -4,7 +4,7 @@ const axios = require('axios');
 const { resolve } = require('path');
 const fs = require('fs');
 const { promisify } = require('util');
-const jimp = require('jimp');
+const Jimp = require('jimp');
 const asyncJimp = promisify(jimp);
 const FormData = require('form-data');
 
@@ -84,7 +84,11 @@ function main() {
             .read(path + '.' + fileExt)
             .then(resolve => {
               (fileExt !== 'png') ? fileExt = 'png' : fileExt = 'jpg';
-              resolve.write(path + '.' + fileExt);
+              resolve
+              .deflateStrategy(0)
+              .filterType(Jimp.PNG_FILTER_NONE)
+              .colorType(0)
+              .write(path + '.' + fileExt);
             }).catch(reject => reject());
 
           const form = new FormData();
@@ -125,6 +129,3 @@ function main() {
 }
 
 main();
-
-
-
