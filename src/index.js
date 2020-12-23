@@ -8,7 +8,6 @@ const Jimp = require('jimp');
 const asyncJimp = promisify(Jimp);
 const FormData = require('form-data');
 
-
 function main() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -26,24 +25,26 @@ function main() {
 
     if (message) {
       if (message.text) {
-        await sendMessage(
+        sendMessage(
           message,
-          "Hi! Give me a image file so I can convert to PNG"
+          'Hi! Give me a image file so I can convert to PNG'
         );
         return res.end();
-      };
+      }
 
       try {
         if (message.hasOwnProperty('photo')) {
-          await sendMessage(message, 'You must send a image file without compression');
+          sendMessage(
+            message,
+            'You must send a image file without compression'
+          );
 
           return res.end();
         }
 
         if (message.hasOwnProperty('document')) {
-
           if (!message.document.mime_type.includes('image/')) {
-            await sendMessage(message, 'You must send a image');
+            sendMessage(message, 'You must send a image');
 
             return res.end();
           }
@@ -52,9 +53,13 @@ function main() {
 
           let [fileTitle, fileExt] = file_name.split('.');
 
-          if(fileExt !== 'bmp' || 'gif' || 'jpeg' || 'jpg' || 'png' || 'tiff') {
-            sendMessage(message, "Sorry, we don't work with " + fileExt + ' files.');
-          }
+          if (['bmp', 'gif', 'jpeg', 'png', 'tiff'].indexOf(fileExt) < 0) {
+            sendMessage(
+              message,
+              "Sorry, I don't work with " + fileExt + ' files.'
+            );
+            return res.end();
+        };
 
           const response1 = await axios.get(
             TELEGRAM_URL + `/getFile?file_id=${file_id}`
@@ -86,12 +91,11 @@ function main() {
           sendMessage(message, 'File received, converting...');
           await asyncJimp
             .read(path + '.' + fileExt)
-            .then(resolve => {
-              (fileExt !== 'png') ? fileExt = 'png' : fileExt = 'jpg';
-              resolve
-              .deflateStrategy(1)
-              .write(path + '.' + fileExt);
-            }).catch(reject => reject());
+            .then((resolve) => {
+              fileExt !== 'png' ? (fileExt = 'png') : (fileExt = 'jpg');
+              resolve.deflateStrategy(1).write(path + '.' + fileExt);
+            })
+            .catch((reject) => reject());
 
           const form = new FormData();
 
@@ -99,20 +103,18 @@ function main() {
           form.append('document', fs.createReadStream(path + '.' + fileExt));
 
           let headers = {
-            headers: form.getHeaders()
-          }
+            headers: form.getHeaders(),
+          };
 
           await axios.post(TELEGRAM_URL + '/sendDocument', form, headers);
           fs.unlinkSync(path + '.' + fileExt);
-          await sendMessage(message, 'Done!');
+          sendMessage(message, 'Done!');
           return res.end();
         }
       } catch (error) {
-
-        await sendMessage(message, 'Internal error, try again later')
+        sendMessage(message, 'Internal error, try again later');
         throw new Error(error);
       }
-
 
       return res.end();
     }
