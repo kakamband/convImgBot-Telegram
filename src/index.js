@@ -53,7 +53,7 @@ function main() {
 
           let [fileTitle, fileExt] = file_name.split('.');
 
-          if (['bmp', 'gif', 'jpeg', 'png', 'tiff'].indexOf(fileExt) < 0) {
+          if (['bmp', 'gif', 'jpeg', 'png', 'tiff'].indexOf(fileExt) !== -1) {
             sendMessage(
               message,
               "Sorry, I don't work with " + fileExt + ' files.'
