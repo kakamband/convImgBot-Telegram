@@ -25,7 +25,7 @@ function main() {
 
     if (message) {
       if (message.text) {
-        sendMessage(
+        await sendMessage(
           message,
           'Hi! Give me a image file so I can convert to PNG'
         );
@@ -34,7 +34,7 @@ function main() {
 
       try {
         if (message.hasOwnProperty('photo')) {
-          sendMessage(
+          await sendMessage(
             message,
             'You must send a image file without compression'
           );
@@ -44,7 +44,7 @@ function main() {
 
         if (message.hasOwnProperty('document')) {
           if (!message.document.mime_type.includes('image/')) {
-            sendMessage(message, 'You must send a image');
+            await sendMessage(message, 'You must send a image');
 
             return res.end();
           }
@@ -54,7 +54,7 @@ function main() {
           let [fileTitle, fileExt] = file_name.split('.');
 
           if (['bmp', 'gif', 'jpeg', 'png', 'tiff'].indexOf(fileExt) !== -1) {
-            sendMessage(
+            await sendMessage(
               message,
               "Sorry, I don't work with " + fileExt + ' files.'
             );
@@ -108,11 +108,11 @@ function main() {
 
           await axios.post(TELEGRAM_URL + '/sendDocument', form, headers);
           fs.unlinkSync(path + '.' + fileExt);
-          sendMessage(message, 'Done!');
+          await sendMessage(message, 'Done!');
           return res.end();
         }
       } catch (error) {
-        sendMessage(message, 'Internal error, try again later');
+        await sendMessage(message, 'Internal error, try again later');
         throw new Error(error);
       }
 
@@ -124,8 +124,8 @@ function main() {
 
   app.listen(process.env.PORT || 3000);
 
-  async function sendMessage(message, text) {
-    await axios.post(TELEGRAM_URL + '/sendMessage', {
+  function sendMessage(message, text) {
+    return axios.post(TELEGRAM_URL + '/sendMessage', {
       chat_id: message.chat.id,
       text: text,
     });
