@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const axios = require('axios');
-const Path = require('path');
+const { resolve } = require('path');
 const fs = require('fs');
 const { promisify } = require('util');
 const jimp = require('jimp');
@@ -25,15 +25,14 @@ function main() {
     const { message } = req.body;
 
     if (message) {
-      // await sendMessage(message, message);
       if (message.text) {
-
         await sendMessage(
           message,
           "Hi! Give me a image file so I can convert to PNG"
         );
         return res.end();
-      }
+      };
+
       try {
         if (message.hasOwnProperty('photo')) {
           await sendMessage(message, 'You must send a image file without compression');
@@ -51,18 +50,14 @@ function main() {
 
           const { file_name, file_id } = message.document;
 
-
-         // const escapeRegex = RegexEscape();
-
           let [fileTitle, fileExt] = file_name.split('.');
 
-          // await sendMessage(message, 'fileId ' + fileId)
           const response1 = await axios.get(
             TELEGRAM_URL + `/getFile?file_id=${file_id}`
           );
 
           const { file_path } = response1.data.result;
-          //await sendMessage(message, 'filePath ' + JSON.stringify(file_path));
+
           const fileUrl = `https://api.telegram.org/file/bot${TOKEN}/${file_path}`;
 
           const response2 = await axios({
@@ -71,7 +66,7 @@ function main() {
             responseType: 'stream',
           });
 
-          const path = Path.resolve(__dirname, '..', '..', '..', 'tmp', fileTitle);
+          const path = resolve(__dirname, '..', '..', '..', 'tmp', fileTitle);
 
           response2.data.pipe(fs.createWriteStream(path + '.' + fileExt));
 
@@ -106,14 +101,14 @@ function main() {
           await sendMessage(message, 'Done!');
           return res.end();
         }
-       } catch (error) {
+      } catch (error) {
 
-          await sendMessage(message, 'Internal error, try again later')
-          throw error;
-        }
+        await sendMessage(message, 'Internal error, try again later')
+        throw new Error(error);
+      }
 
 
-     return res.end();
+      return res.end();
     }
 
     return res.end();
