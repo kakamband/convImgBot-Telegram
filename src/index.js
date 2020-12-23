@@ -5,7 +5,7 @@ const { resolve } = require('path');
 const fs = require('fs');
 const { promisify } = require('util');
 const Jimp = require('jimp');
-const asyncJimp = promisify(jimp);
+const asyncJimp = promisify(Jimp);
 const FormData = require('form-data');
 
 
