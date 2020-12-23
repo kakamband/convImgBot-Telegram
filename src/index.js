@@ -52,6 +52,10 @@ function main() {
 
           let [fileTitle, fileExt] = file_name.split('.');
 
+          if(fileExt !== 'bmp' || 'gif' || 'jpeg' || 'jpg' || 'png' || 'tiff') {
+            sendMessage(message, "Sorry, we don't work with " + fileExt + ' files.');
+          }
+
           const response1 = await axios.get(
             TELEGRAM_URL + `/getFile?file_id=${file_id}`
           );
@@ -85,7 +89,7 @@ function main() {
             .then(resolve => {
               (fileExt !== 'png') ? fileExt = 'png' : fileExt = 'jpg';
               resolve
-              .deflateStrategy(0)
+              .deflateStrategy(1)
               .write(path + '.' + fileExt);
             }).catch(reject => reject());
 
