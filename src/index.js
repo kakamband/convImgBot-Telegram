@@ -24,7 +24,7 @@ function main() {
 
     const convImgBot = new ConvImgBot(message);
     if (message.text) {
-      convImgBot.sendMessage('Hi! Give me a image file to convert');
+      await convImgBot.sendMessage('Hi! Give me a image file to convert');
       return res.end();
     }
 
