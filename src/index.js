@@ -1,4 +1,5 @@
 const express = require('express');
+const ImageValidator = require('./imageValidator');
 
 const app = express();
 
@@ -28,15 +29,13 @@ function main() {
       return res.end();
     }
 
-    const isValidFile = await convImgBot.checkIfFileIsValid();
+    const isValidFile = await ImageValidator.checkIfFileIsValid(message);
     if (!isValidFile) {
       return res.end();
     }
     try {
-      await convImgBot.getFileAttributes();
-      await convImgBot.getFile();
-      await convImgBot.convertImage();
-      await convImgBot.sendFile();
+      await convImgBot.getFileAttributes().getFile().convertImage().sendFile();
+
       return res.end();
     } catch (error) {
       console.error(error);
