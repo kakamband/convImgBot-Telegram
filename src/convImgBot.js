@@ -51,8 +51,9 @@ class ConvImgBot extends TelegramBot {
     };
     const method = 'sendDocument';
     await post(this.DEFAULT_TELEGRAM_URL + method, form, headers);
+    this.sendMessage('Done!');
     fs.unlinkSync(`${this.path}.${this.file.ext}`);
-    await this.sendMessage('Done!');
+
     return this;
   }
 
