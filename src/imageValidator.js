@@ -1,10 +1,8 @@
-const TelegramBot = require('./telegramBot');
-
-class ImageValidator extends TelegramBot {
+class ImageValidator {
   constructor(message) {
-    super(message);
     this.message = message;
     this.suportedTypes = ['bmp', 'gif', 'jpeg', 'png', 'tiff'];
+    this.error = '';
   }
 
   checkIfFileIsValid() {
@@ -12,11 +10,12 @@ class ImageValidator extends TelegramBot {
     const isDocument = this.message.hasOwnProperty('document');
 
     if (!isPhoto && !isDocument) {
+      this.error = 'Invalid file.';
       return false;
     }
 
     if (isPhoto) {
-      this.sendMessage('You must send a image file without compression');
+      this.error = 'Please send a image file without compression.';
       return false;
     }
 
@@ -25,7 +24,7 @@ class ImageValidator extends TelegramBot {
       const isImage = mime_type.includes('image/');
 
       if (!isImage) {
-        this.sendMessage('File must be a image');
+        this.error = 'File must be a image.';
         return false;
       }
       const { file_name } = this.message.document;
@@ -35,10 +34,10 @@ class ImageValidator extends TelegramBot {
       const isFileSuported = this.suportedTypes.indexOf(fileExt) >= 0;
 
       if (!isFileSuported) {
-        this.sendMessage(`Sorry, I don't work with ${fileExt} files.`);
+        this.error = `The extension ${fileExt} is not suported.`;
         return false;
       }
-      this.sendMessage('Processing image...');
+
       return true;
     }
   }
